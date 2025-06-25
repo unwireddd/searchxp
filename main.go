@@ -44,8 +44,16 @@ func processor(w http.ResponseWriter, r *http.Request) {
     if err != nil {
         fmt.Println("Error writing to file:", err)
 	}
-	// yeah that works so now I can display the content of it in my html file using javascript (tomorrow)
+	// Variable saved
 
+	// ok so this one passes the variable from my previous form to the html file (seems to be working for now)
+	// so now what I think I need to do is to parse the search results from some kind of another search engine, I think I may just try to scrape
+	// as much content as possible from various different engines through all the methods I can find and then connect all of them somehow, so basically writing a couple of different parsers for next days
+	query := struct{
+		First string
+	}{
+		First: fname,
+	}
 	// so the ExecuteTemplate function brings me to the html file I want to go to
-	tpl.ExecuteTemplate(w, "processor.html", fname)
+	tpl.ExecuteTemplate(w, "processor.html", query)
 }
