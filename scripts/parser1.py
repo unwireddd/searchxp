@@ -34,5 +34,5 @@ for i in range(0,100,10):
          o={}
 
 print(l)
-with open('/home/metro/searchxp/res_combined.txt.txt', 'w') as f:
+with open('/home/metro/searchxp/res_combined.txt', 'w') as f:
     f.write(your_variable)
