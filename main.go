@@ -2,10 +2,9 @@ package main
 
 import (
 	"fmt"
-	"net/http"
 	"html/template"
+	"net/http"
 	"os"
-	
 )
 
 // reminder that if I want to use the same variable in different files I need to declare it before using it in any fundtion so Its global
@@ -38,30 +37,32 @@ func processor(w http.ResponseWriter, r *http.Request) {
 	// Saving the variable contents into my text file
 
 	file, err := os.Create("output.txt")
-    if err != nil {
-        fmt.Println("Error creating file:", err)
-        return
-    }
-    defer file.Close() // Ensure the file is closed after writing
+	if err != nil {
+		fmt.Println("Error creating file:", err)
+		return
+	}
+	defer file.Close() // Ensure the file is closed after writing
 
-    // Write the content to the file
-    _, err = file.WriteString(fname)
-    if err != nil {
-        fmt.Println("Error writing to file:", err)
+	// Write the content to the file
+	_, err = file.WriteString(fname)
+	if err != nil {
+		fmt.Println("Error writing to file:", err)
 	}
 	// Variable saved
 
 	// ok so this one passes the variable from my previous form to the html file (seems to be working for now)
 	// so now what I think I need to do is to parse the search results from some kind of another search engine, I think I may just try to scrape
 	// as much content as possible from various different engines through all the methods I can find and then connect all of them somehow, so basically writing a couple of different parsers for next days
-	bing()
-	query := struct{
+	for {
+		test_python_bindings()
+	}
+	query := struct {
 		First string
 	}{
 		First: resp_bing,
 	}
 	// so the ExecuteTemplate function brings me to the html file I want to go to
-	
+
 	tpl.ExecuteTemplate(w, "processor.html", query)
 
 }
