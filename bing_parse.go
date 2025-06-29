@@ -5,6 +5,7 @@ import (
 	"os"
 	"strings"
 
+	//"github.com/kluctl/go-embed-python/pip"
 	"github.com/kluctl/go-embed-python/python"
 	//"net/http"
 	//"strings"
@@ -12,10 +13,11 @@ import (
 
 var resp_bing string
 
+// since Ive ecountered some problems with understanding the documentation of it here is an example provided by the authors
+// https://github.com/kluctl/go-jinja2
+
 func test_python_bindings() {
 	// so this actually works but I need to find out on how to make it handle requests
-	// note that 15 mins more tomorrow
-
 	fname_bing := strings.ReplaceAll(fname, " ", "+")
 	python_code := fmt.Sprintf(`
 	import requests
