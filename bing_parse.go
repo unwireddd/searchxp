@@ -3,7 +3,8 @@ package main
 import (
 	"fmt"
 	"os"
-	"strings"
+
+	//"strings"
 
 	//"github.com/kluctl/go-embed-python/pip"
 	"github.com/kluctl/go-embed-python/python"
@@ -18,35 +19,46 @@ var resp_bing string
 
 func test_python_bindings() {
 	// so this actually works but I need to find out on how to make it handle requests
-	fname_bing := strings.ReplaceAll(fname, " ", "+")
-	python_code := fmt.Sprintf(`
-	import requests
-	from bs4 import BeautifulSoup
+	//fname_bing := strings.ReplaceAll(fname, " ", "+")
+	// something with the python spacing may be broken here so I think I will just read the code from my .py file
+	// well yeah everything seems to be working fine rn but I need to fix the python spacing issue somehow
 
-	l=[]
-	o={}
-	for i in range(0,100,10):
+	// test for reading the raw python file here
+	b, err := os.ReadFile("/home/metro/searchxp/scripts/parser1.py")
+	if err != nil {
+		fmt.Print(err)
+	}
+	b2 := string(b)
+	// test finished
 
-    target_url=f"https://www.bing.com/search?q=%s&rdr=1".format(i+1)
+	/*python_code := fmt.Sprintf(
+			`import requests
+		from bs4 import BeautifulSoup
 
-    print(target_url)
+			l=[]
+			o={}
+			for i in range(0,100,10):
 
-    resp=requests.get(target_url)
+			target_url=f"https://www.bing.com/search?q=%s&rdr=1".format(i+1)
 
-    soup = BeautifulSoup(resp.text, 'html.parser')
+			print(target_url)
 
-    completeData = soup.find_all("li",{"class":"b_algo"})
+			resp=requests.get(target_url)
 
-    for i in range(0, len(completeData)):
-         o["Title"]=completeData[i].find("a").text
-         o["link"]=completeData[i].find("a").get("href")
-         o["Description"]=completeData[i].find("div",
-       {"class":"b_caption"}).text
-         o["Position"]=i+1
-         l.append(o)
-         o={}
+			soup = BeautifulSoup(resp.text, 'html.parser')
 
-print(l)`, fname_bing)
+			completeData = soup.find_all("li",{"class":"b_algo"})
+
+			for i in range(0, len(completeData)):
+				o["Title"]=completeData[i].find("a").text
+				o["link"]=completeData[i].find("a").get("href")
+				o["Description"]=completeData[i].find("div",
+			{"class":"b_caption"}).text
+				o["Position"]=i+1
+				l.append(o)
+				o={}
+
+	print(l)`, fname_bing)*/
 
 	// ok so this seems to be working and it just prints out the output of my python code
 	ep, err := python.NewEmbeddedPython("example")
@@ -54,7 +66,9 @@ print(l)`, fname_bing)
 		panic(err)
 	}
 
-	cmd, err := ep.PythonCmd("-c", python_code)
+	// it throws me an no module named request error and Its not the generator problem
+	// so the embed enviroment still doesnt have my external packages for some reason
+	cmd, err := ep.PythonCmd("-c", b2)
 	if err != nil {
 		panic(err)
 	}
