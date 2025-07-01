@@ -54,7 +54,7 @@ func processor(w http.ResponseWriter, r *http.Request) {
 	// so now what I think I need to do is to parse the search results from some kind of another search engine, I think I may just try to scrape
 	// as much content as possible from various different engines through all the methods I can find and then connect all of them somehow, so basically writing a couple of different parsers for next days
 	for {
-		test_python_bindings()
+		rewritten("germany")
 	}
 	query := struct {
 		First string
