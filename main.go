@@ -54,12 +54,13 @@ func processor(w http.ResponseWriter, r *http.Request) {
 	// so now what I think I need to do is to parse the search results from some kind of another search engine, I think I may just try to scrape
 	// as much content as possible from various different engines through all the methods I can find and then connect all of them somehow, so basically writing a couple of different parsers for next days
 	for {
-		rewritten("germany")
+		rewritten("poland")
 	}
+
 	query := struct {
 		First string
 	}{
-		First: resp_bing,
+		First: bing_html,
 	}
 	// so the ExecuteTemplate function brings me to the html file I want to go to
 
