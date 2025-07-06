@@ -1,25 +1,24 @@
 package main
 
 import (
+	"fmt"
+	"math/rand"
+	"net/http"
+	"strings"
+	"time"
 
-"fmt"
-"net/http"
-"strings"
-"time"
-"math/rand"
-"net/url"
-"github.com/PuerkitoBio/goquery"
+	"github.com/PuerkitoBio/goquery"
 )
 
 var bingDomains = map[string]string{
-	"com":"",
+	"com": "",
 }
 
-type SearchResult struct{
-	ResultRank int
-	ResultURL string
+type SearchResult struct {
+	ResultRank  int
+	ResultURL   string
 	ResultTitle string
-	ResultDesc string
+	//ResultDesc  string
 }
 
 var userAgents = []string{
@@ -31,86 +30,123 @@ var userAgents = []string{
 	"Mozilla/5.0 (Linux; Linux i686 x86_64; en-US) Gecko/20100101 Firefox/64.7",
 }
 
-func randomUserAgent() string{
+func randomUserAgent() string {
 	rand.Seed(time.Now().Unix())
-	randNum := rand.Int()%len(userAgents)
+	randNum := rand.Int() % len(userAgents)
 	return userAgents[randNum]
 }
 
-func buildBingUrls(searchTerm, country string, pages, count int)([]string, error){
+func buildBingUrls(searchTerm, country string, pages, count int) ([]string, error) {
 	toScrape := []string{}
 	searchTerm = strings.Trim(searchTerm, " ")
 	searchTerm = strings.Replace(searchTerm, " ", "+", -1)
-	if CountryCode, found := bingDomains[country]; found{
-		for i:= 0, i<pages; i++{
-			first := firstParameter(i, count);
+	if countryCode, found := bingDomains[country]; found {
+		for i := 0; i < pages; i++ {
+			first := firstParameter(i, count)
 			scrapeURL := fmt.Sprintf("https://bing.com/search?q=%sfirst=%d&count=%d%s", searchTerm, first, count, countryCode)
 			toScrape = append(toScrape, scrapeURL)
 		}
-	}else{
+	} else {
 		fmt.Println("Country not found")
-		return nil
+
 	}
-return toScrape. nil
+	return toScrape, nil
 }
 
-func firstParameter(number, count int) int{
-	if number == 0{
-		return number +1
+func firstParameter(number, count int) int {
+	if number == 0 {
+		return number + 1
 	}
-	return number*count+1
+	return number*count + 1
 }
 
-func scrapeClientRequest(searchURL string)(*http.Response, error){
+func getScrapeClient(proxyString interface{}) *http.Client {
+	switch V := proxyString.(type) {
+	case string:
+		//proxyUrl, _ := url.Parse(V)
+		//return &http.Client(Transport: &http.Transport{Proxy: http.ProxyURL(proxyUrl)})
+		fmt.Println(V)
+	default:
+		return &http.Client{}
+	}
+	return nil
+}
+
+func scrapeClientRequest(searchURL string, proxyString interface{}) (*http.Response, error) {
+	baseClient := getScrapeClient(proxyString)
 	req, err := http.NewRequest("GET", searchURL, nil)
-	red.Header.Set("User-Agent", randomUserAgent())
+	req.Header.Set("User-Agent", randomUserAgent())
 	res, err := baseClient.Do(req)
 	if res.StatusCode != 200 {
-		err := fmt.Println("BANNED")
-		return err
+		err, _ := fmt.Println("BANNED")
+		fmt.Println(err)
 	}
-	if err != nil{
-		return err
+	if err != nil {
+		fmt.Println(err)
 	}
 	return res, nil
 }
 
-func BingScrape(searchTerm, country string, pages, count, backoff int)([]SearchResult, error){
+func BingScrape(searchTerm, country string, pages, count, backoff int) ([]SearchResult, error) {
 	results := []SearchResult{}
 	bingPages, err := buildBingUrls(searchTerm, country, pages, count)
-		if err != nil {
+	if err != nil {
 		fmt.Println(err)
 	}
 
-	for _, page := range bingPages{
+	for _, page := range bingPages {
 		rank := len(results)
-		res, err := scrapeClientRequest(page)
-		if err == nil {
-			return err
+		res, err := scrapeClientRequest(page, nil)
+		if err != nil {
+			fmt.Println(err)
 		}
 		data, err := bingResultParser(res, rank)
-		if err == nil {
-			return err
+		if err != nil {
+			fmt.Println(err)
 		}
-		for _, result := range data{
+		for _, result := range data {
 			results = append(results, result)
 		}
-		time.Sleep(time.Duration(backoff)*time.Second)
+		time.Sleep(time.Duration(backoff) * time.Second)
 	}
 	return results, nil
 }
 
-func bingResultParser(response *http.Response, rank int)([]SearchResult, error){
+func bingResultParser(response *http.Response, rank int) ([]SearchResult, error) {
 	doc, err := goquery.NewDocumentFromResponse(response)
 	if err != nil {
 		fmt.Println(err)
 	}
 	results := []SearchResult{}
+	sel := doc.Find("li.b_algo")
+	rank++
+
+	for i := range sel.Nodes {
+		item := sel.Eq(i)
+		linkTag := item.Find("a")
+		link, _ := linkTag.Attr("href")
+		titleTag := item.Find("h2")
+		//descTag := descTag.Text()
+		//desc := descTag.Text()
+		title := titleTag.Text()
+		link = strings.Trim(link, " ")
+		if link != "" && link != "#" && !strings.HasPrefix(link, "/") {
+			result := SearchResult{
+				rank,
+				link,
+				title,
+				//desc,
+			}
+			results = append(results, result)
+		}
+	}
+	return results, nil
 }
 
 func mainParser() {
-	res, err = BingScrape("germany", "com", 2, 30, 30)
+	res, err := BingScrape("germany", "com", 2, 30, 30)
 	if err != nil {
 		fmt.Println(err)
 	}
+	fmt.Println(res)
 }
