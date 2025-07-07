@@ -12,13 +12,16 @@ import (
 var fname string
 
 var tpl *template.Template
+var tpl2 *template.Template
 
 func init() {
 	tpl = template.Must(template.ParseGlob("sites/*.html"))
+	//tpl2 = template.Must(template.ParseGlob("*.html"))
 }
 
 // Initiating the webserver
 func main() {
+	procGen()
 	http.HandleFunc("/", index)
 	// if there is a form or something in html then the line below will make it handle it with a certain function we assigned to it
 	http.HandleFunc("/process", processor)
@@ -53,17 +56,17 @@ func processor(w http.ResponseWriter, r *http.Request) {
 	// ok so this one passes the variable from my previous form to the html file (seems to be working for now)
 	// so now what I think I need to do is to parse the search results from some kind of another search engine, I think I may just try to scrape
 	// as much content as possible from various different engines through all the methods I can find and then connect all of them somehow, so basically writing a couple of different parsers for next days
-	for {
-		mainParser()
-	}
+	//output := mainParser("a")
+
+	//okay so now when the parser works as it should what I want to do is to make Its content readable like in a regular browser
 
 	query := struct {
 		First string
 	}{
-		First: bing_html,
+		First: "a",
 	}
 	// so the ExecuteTemplate function brings me to the html file I want to go to
 
-	tpl.ExecuteTemplate(w, "processor.html", query)
+	tpl.ExecuteTemplate(w, "output.html", query)
 
 }

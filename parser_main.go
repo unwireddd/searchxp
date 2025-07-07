@@ -13,13 +13,18 @@ import (
 var bingDomains = map[string]string{
 	"com": "",
 }
+var bingRes []SearchResult
 
 type SearchResult struct {
 	ResultRank  int
 	ResultURL   string
 	ResultTitle string
-	//ResultDesc  string
+	ResultDesc  string
 }
+
+// so I have that result struct here which I can convert to html type strings using the string conversion
+var resultsArr []string
+var descriptions []string
 
 var userAgents = []string{
 	"Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_8_9; en-US) AppleWebKit/600.23 (KHTML, like Gecko) Chrome/49.0.3283.150 Safari/534",
@@ -126,8 +131,8 @@ func bingResultParser(response *http.Response, rank int) ([]SearchResult, error)
 		linkTag := item.Find("a")
 		link, _ := linkTag.Attr("href")
 		titleTag := item.Find("h2")
-		//descTag := descTag.Text()
-		//desc := descTag.Text()
+		descTag := item.Find("div.b_caption p")
+		desc := descTag.Text()
 		title := titleTag.Text()
 		link = strings.Trim(link, " ")
 		if link != "" && link != "#" && !strings.HasPrefix(link, "/") {
@@ -135,18 +140,28 @@ func bingResultParser(response *http.Response, rank int) ([]SearchResult, error)
 				rank,
 				link,
 				title,
-				//desc,
+				desc,
 			}
+			resultArr := fmt.Sprintf(`<a href="%s">%s</a>`, link, title)
+			resultsArr = append(resultsArr, resultArr)
+			descriptions = append(descriptions, fmt.Sprintf("<p>%s</p>", desc))
 			results = append(results, result)
 		}
 	}
 	return results, nil
 }
 
-func mainParser() {
-	res, err := BingScrape("germany", "com", 2, 30, 30)
+func mainParser(query string) []string {
+	res, err := BingScrape(query, "com", 2, 30, 30)
 	if err != nil {
 		fmt.Println(err)
 	}
+	//fmt.Println("A")
 	fmt.Println(res)
+	bingRes = res
+	procGen()
+	return resultsArr
+	// ok so I have my parsed arrays with html strings and now what I want to do is to inject them into my html file somehow
+	// I can just write a html file and then make a function that puts all of them in it
+
 }
