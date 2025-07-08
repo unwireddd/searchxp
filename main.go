@@ -12,7 +12,7 @@ import (
 var fname string
 
 var tpl *template.Template
-var tpl2 *template.Template
+var temp *template.Template
 
 func init() {
 	tpl = template.Must(template.ParseGlob("sites/*.html"))
@@ -21,10 +21,11 @@ func init() {
 
 // Initiating the webserver
 func main() {
-	procGen()
+
 	http.HandleFunc("/", index)
 	// if there is a form or something in html then the line below will make it handle it with a certain function we assigned to it
-	http.HandleFunc("/process", processor)
+	// NOTE THAT THE FIX FOR MY PROBLEM WAS TO MAKE SURE THAT output.html file already exists from the beginning
+	http.HandleFunc("/output", output)
 	http.ListenAndServe(":6060", nil)
 }
 
@@ -34,9 +35,14 @@ func index(w http.ResponseWriter, r *http.Request) {
 }
 
 // This one should handle the html form
-func processor(w http.ResponseWriter, r *http.Request) {
+func output(w http.ResponseWriter, r *http.Request) {
+	// okay so it turns out that the whole thing only works if the output file is here from the beginning
+	// making the script remove all of Its contents and replacing them with the results for a new search term wont really work at all since the function
+	// reads the file from Its beginning state anyways
 	fname = r.FormValue("phrase")
 	fmt.Println(fname)
+	mainParser(fname)
+	procGen()
 	// Saving the variable contents into my text file
 
 	file, err := os.Create("output.txt")
@@ -65,8 +71,11 @@ func processor(w http.ResponseWriter, r *http.Request) {
 	}{
 		First: "a",
 	}
+	fmt.Println(query)
 	// so the ExecuteTemplate function brings me to the html file I want to go to
 
-	tpl.ExecuteTemplate(w, "output.html", query)
+	temp = template.Must(template.ParseGlob("res/*.html"))
+
+	temp.ExecuteTemplate(w, "output.html", nil)
 
 }

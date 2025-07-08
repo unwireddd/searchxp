@@ -8,8 +8,8 @@ import (
 func procGen() {
 
 	// Define the file path and the text to be written before the arrays
-	filePath := "sites/output.html"
-	text := "<!doctype html>\n<html>\n<head>\n<title>res</title>\n</head>\n"
+	filePath := "res/output.html"
+	text := "<!doctype html>\n<html>\n<head>\n<title>res</title>\n</head>\n<body>"
 
 	// Open the file in append mode
 	file, err := os.OpenFile(filePath, os.O_WRONLY|os.O_CREATE|os.O_APPEND, 0644)
