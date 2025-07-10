@@ -9,6 +9,8 @@ import (
 
 // reminder that if I want to use the same variable in different files I need to declare it before using it in any fundtion so Its global
 
+// okay do what I need to do now is to make the output file clean itself before adding new data, adding a goBack function for now and make an image scraper
+
 var fname string
 
 var tpl *template.Template
@@ -26,6 +28,7 @@ func main() {
 	// if there is a form or something in html then the line below will make it handle it with a certain function we assigned to it
 	// NOTE THAT THE FIX FOR MY PROBLEM WAS TO MAKE SURE THAT output.html file already exists from the beginning
 	http.HandleFunc("/output", output)
+	http.HandleFunc("/goback", goback)
 	http.ListenAndServe(":6060", nil)
 }
 
@@ -78,4 +81,14 @@ func output(w http.ResponseWriter, r *http.Request) {
 
 	temp.ExecuteTemplate(w, "output.html", nil)
 
+}
+
+func goback(w http.ResponseWriter, r *http.Request) {
+	// ok so right now it doesnt even execute so the problem is rather in my backend
+	// I think that may be caused by the fact that the button is not in my index file
+	// but the function itself works since I can execute it from the search bar
+	fmt.Println("point")
+	temp = template.Must(template.ParseGlob("*.html"))
+
+	temp.ExecuteTemplate(w, "images.html", nil)
 }
