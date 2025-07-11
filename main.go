@@ -5,6 +5,7 @@ import (
 	"html/template"
 	"net/http"
 	"os"
+	"os/exec"
 )
 
 // reminder that if I want to use the same variable in different files I need to declare it before using it in any fundtion so Its global
@@ -60,6 +61,24 @@ func output(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		fmt.Println("Error writing to file:", err)
 	}
+	// EXECUTING THE IMAGE BULK-DOWNLOAD SCRIPT START
+	pythonCmd := "python3"
+	scriptPath := "/home/metro/searchxp/scripts/imgscrape_test.py"
+
+	// Create a new command
+	cmd := exec.Command(pythonCmd, scriptPath)
+
+	// Run the command and wait for it to complete
+	output, err := cmd.CombinedOutput()
+	if err != nil {
+		fmt.Printf("Error executing script: %s\nOutput: %s\n", err, output)
+		return
+	}
+
+	fmt.Println("Script executed successfully")
+	// image bulk-downloading works fine
+	// so now what I need to do is to make a script that displays all of those downloaded images in a html format
+
 	// Variable saved
 
 	// ok so this one passes the variable from my previous form to the html file (seems to be working for now)
