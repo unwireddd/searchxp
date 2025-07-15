@@ -24,7 +24,7 @@ func init() {
 
 // Initiating the webserver
 func main() {
-
+	defer os.RemoveAll("/home/metro/searchxp/dataset")
 	http.HandleFunc("/", index)
 	// if there is a form or something in html then the line below will make it handle it with a certain function we assigned to it
 	// NOTE THAT THE FIX FOR MY PROBLEM WAS TO MAKE SURE THAT output.html file already exists from the beginning
@@ -64,6 +64,7 @@ func output(w http.ResponseWriter, r *http.Request) {
 	// EXECUTING THE IMAGE BULK-DOWNLOAD SCRIPT START
 	pythonCmd := "python3"
 	scriptPath := "/home/metro/searchxp/scripts/imgscrape_test.py"
+	scriptPath2 := "/home/metro/searchxp/htmlgen.py"
 
 	// Create a new command
 	cmd := exec.Command(pythonCmd, scriptPath)
@@ -72,6 +73,16 @@ func output(w http.ResponseWriter, r *http.Request) {
 	output, err := cmd.CombinedOutput()
 	if err != nil {
 		fmt.Printf("Error executing script: %s\nOutput: %s\n", err, output)
+		return
+	}
+
+	fmt.Println("Script executed successfully")
+	cmd2 := exec.Command(pythonCmd, scriptPath2)
+
+	// Run the command and wait for it to complete
+	output2, err := cmd2.CombinedOutput()
+	if err != nil {
+		fmt.Printf("Error executing script: %s\nOutput: %s\n", err, output2)
 		return
 	}
 
@@ -109,5 +120,5 @@ func goback(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("point")
 	temp = template.Must(template.ParseGlob("*.html"))
 
-	temp.ExecuteTemplate(w, "images.html", nil)
+	temp.ExecuteTemplate(w, "imgdata.html", nil)
 }
