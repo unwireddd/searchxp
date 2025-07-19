@@ -1,15 +1,17 @@
 import os
 import glob
-from bing_image_downloader import downloader
+#from bing_image_downloader import downloader
 
 
 quer = open("/home/metro/searchxp/output.txt", "r")
 quer2 = quer.readlines()
 quer3 = quer2[0]
 quer3 = str(quer3)
-directory = "/home/metro/searchxp/dataset/" + quer3
-dirlink = directory + "/"
-downloader.download(quer3, limit=100,  output_dir='dataset', adult_filter_off=True, force_replace=False, timeout=60, verbose=True)
+#directory = "/home/metro/searchxp/dataset/" + quer3
+directory = "dataset/" + quer3
+#dirlink = directory + "/"
+dirlink = quer3 + "/"
+#downloader.download(quer3, limit=100,  output_dir='dataset', adult_filter_off=True, force_replace=False, timeout=60, verbose=True)
 
 def generate_html(image_folder, output_file):
     """
@@ -68,12 +70,12 @@ def generate_html(image_folder, output_file):
     # Write the HTML content to the output file
 
     print(html_content)
-    with open("imgdata.html", "w") as file:
+    with open("/home/metro/searchxp/dataset/imgdata.html", "w") as file:
         file.write(html_content)
 # Example usage
 image_folder = directory
 print("AAAAA")
 print(image_folder)
 print("AAA")
-output_file = '/home/metro/searchxp/imgdata.html'
+output_file = '/home/metro/searchxp/dataset/imgdata.html'
 generate_html(image_folder, output_file)

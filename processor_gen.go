@@ -12,7 +12,8 @@ func procGen() {
 	filePath := "res/output.html"
 	text := "<!doctype html>\n<html>\n<head>\n<title>res</title>\n</head>\n<body>\n<h1>Search results for: {{.First}}</h1>\n"
 	//goBack := `<a href="http://localhost:6060/goback">[Display images]</a>` + "\n"
-	goBack := `<a href="/imgdata.html">[Display images]</a>` + "\n"
+	goBack := `<a href="http://localhost:8000/imgdata.html">[Display images]</a>\n`
+	//goBack := `<a href="/imgdata.html">[Display images]</a>` + "\n"
 	//gotoImg := `<a href="/images.html>[Display Images]</a>`
 	fileclean, err := os.OpenFile(filePath, os.O_WRONLY|os.O_TRUNC, 0644)
 	if err != nil {

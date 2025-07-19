@@ -3,6 +3,8 @@ package main
 import (
 	"fmt"
 	"html/template"
+	"io/ioutil"
+	"log"
 	"net/http"
 	"os"
 	"os/exec"
@@ -64,20 +66,20 @@ func output(w http.ResponseWriter, r *http.Request) {
 	}
 	// EXECUTING THE IMAGE BULK-DOWNLOAD SCRIPT START
 	pythonCmd := "python3"
-	//scriptPath := "/home/metro/searchxp/scripts/imgscrape_test.py"
+	scriptPath := "/home/metro/searchxp/scripts/imgscrape_test.py"
 	scriptPath2 := "/home/metro/searchxp/htmlgen.py"
 
 	// Create a new command
-	//cmd := exec.Command(pythonCmd, scriptPath)
+	cmd := exec.Command(pythonCmd, scriptPath)
 
 	// Run the command and wait for it to complete
-	/*output, err := cmd.CombinedOutput()
+	output, err := cmd.CombinedOutput()
 	if err != nil {
 		fmt.Printf("Error executing script: %s\nOutput: %s\n", err, output)
 		return
 	}
 
-	fmt.Println("Script executed successfully")*/
+	fmt.Println("Script executed successfully")
 	cmd2 := exec.Command(pythonCmd, scriptPath2)
 	time.Sleep(10)
 	// Run the command and wait for it to complete
@@ -108,6 +110,25 @@ func output(w http.ResponseWriter, r *http.Request) {
 	fmt.Println(query)
 	// so the ExecuteTemplate function brings me to the html file I want to go to
 
+	// test executing the python webserver
+	dir3 := "/home/metro/searchxp/dataset"
+	cmd3 := "python3 -m http.server 8000"
+
+	// Change into the directory
+	c := exec.Command("sh", "-c", cmd3)
+	c.Dir = dir3
+
+	// Start the command in the background
+	err3 := c.Start()
+	if err3 != nil {
+		log.Fatal(err)
+	}
+
+	// Your script continues to run here
+	log.Println("Command started in background")
+
+	// end test
+
 	temp = template.Must(template.ParseGlob("res/*.html"))
 
 	temp.ExecuteTemplate(w, "output.html", nil)
@@ -120,7 +141,16 @@ func goback(w http.ResponseWriter, r *http.Request) {
 	// I think that may be caused by the fact that the button is not in my index file
 	// but the function itself works since I can execute it from the search bar
 	fmt.Println("point")
-	temp = template.Must(template.ParseGlob("*.html"))
+	files, err := ioutil.ReadDir("./")
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	for _, file := range files {
+		fmt.Println(file.Name())
+		// Handle the file
+	}
+	temp = template.Must(template.ParseGlob("dataset/*.html"))
 
 	temp.ExecuteTemplate(w, "imgdata.html", nil)
 }
