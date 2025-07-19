@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"os"
 	"os/exec"
+	"time"
 )
 
 // reminder that if I want to use the same variable in different files I need to declare it before using it in any fundtion so Its global
@@ -63,22 +64,22 @@ func output(w http.ResponseWriter, r *http.Request) {
 	}
 	// EXECUTING THE IMAGE BULK-DOWNLOAD SCRIPT START
 	pythonCmd := "python3"
-	scriptPath := "/home/metro/searchxp/scripts/imgscrape_test.py"
+	//scriptPath := "/home/metro/searchxp/scripts/imgscrape_test.py"
 	scriptPath2 := "/home/metro/searchxp/htmlgen.py"
 
 	// Create a new command
-	cmd := exec.Command(pythonCmd, scriptPath)
+	//cmd := exec.Command(pythonCmd, scriptPath)
 
 	// Run the command and wait for it to complete
-	output, err := cmd.CombinedOutput()
+	/*output, err := cmd.CombinedOutput()
 	if err != nil {
 		fmt.Printf("Error executing script: %s\nOutput: %s\n", err, output)
 		return
 	}
 
-	fmt.Println("Script executed successfully")
+	fmt.Println("Script executed successfully")*/
 	cmd2 := exec.Command(pythonCmd, scriptPath2)
-
+	time.Sleep(10)
 	// Run the command and wait for it to complete
 	output2, err := cmd2.CombinedOutput()
 	if err != nil {
@@ -114,6 +115,7 @@ func output(w http.ResponseWriter, r *http.Request) {
 }
 
 func goback(w http.ResponseWriter, r *http.Request) {
+	// ok so basically the only thing this function does is redirecting me to that file
 	// ok so right now it doesnt even execute so the problem is rather in my backend
 	// I think that may be caused by the fact that the button is not in my index file
 	// but the function itself works since I can execute it from the search bar
@@ -122,3 +124,6 @@ func goback(w http.ResponseWriter, r *http.Request) {
 
 	temp.ExecuteTemplate(w, "imgdata.html", nil)
 }
+
+// so now the image loading script seems to work just fine but the problem is that it just cant find those images before I reload the script or something
+// checking this out rn
