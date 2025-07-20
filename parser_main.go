@@ -10,8 +10,11 @@ import (
 	"github.com/PuerkitoBio/goquery"
 )
 
+// the country detection thing is pretty pointless since I havent really proceeded to writing the actual server side stuff so lets just leave it poland for now
+
 var bingDomains = map[string]string{
 	"com": "",
+	"pl":  "&cc=PL",
 }
 var bingRes []SearchResult
 
@@ -45,6 +48,7 @@ func buildBingUrls(searchTerm, country string, pages, count int) ([]string, erro
 	toScrape := []string{}
 	searchTerm = strings.Trim(searchTerm, " ")
 	searchTerm = strings.Replace(searchTerm, " ", "+", -1)
+	// here it should enter the country
 	if countryCode, found := bingDomains[country]; found {
 		for i := 0; i < pages; i++ {
 			first := firstParameter(i, count)
@@ -152,7 +156,7 @@ func bingResultParser(response *http.Response, rank int) ([]SearchResult, error)
 }
 
 func mainParser(query string) []string {
-	res, err := BingScrape(query, "com", 2, 30, 30)
+	res, err := BingScrape(query, "pl", 2, 30, 30)
 	if err != nil {
 		fmt.Println(err)
 	}
