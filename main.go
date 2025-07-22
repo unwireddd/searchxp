@@ -43,6 +43,11 @@ func index(w http.ResponseWriter, r *http.Request) {
 
 // This one should handle the html form
 func output(w http.ResponseWriter, r *http.Request) {
+	for {
+		//main_google()
+		fmt.Println(GoogleScrape("metro", "com", "en", nil, 1, 30, 10))
+		fmt.Println("point")
+	}
 	// okay so it turns out that the whole thing only works if the output file is here from the beginning
 	// making the script remove all of Its contents and replacing them with the results for a new search term wont really work at all since the function
 	// reads the file from Its beginning state anyways

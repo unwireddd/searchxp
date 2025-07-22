@@ -82,7 +82,7 @@ func getScrapeClient(proxyString interface{}) *http.Client {
 }
 
 func scrapeClientRequest(searchURL string, proxyString interface{}) (*http.Response, error) {
-	baseClient := getScrapeClient(proxyString)
+	baseClient := getScrapeClientG(proxyString)
 	req, err := http.NewRequest("GET", searchURL, nil)
 	req.Header.Set("User-Agent", randomUserAgent())
 	res, err := baseClient.Do(req)
@@ -105,7 +105,7 @@ func BingScrape(searchTerm, country string, pages, count, backoff int) ([]Search
 
 	for _, page := range bingPages {
 		rank := len(results)
-		res, err := scrapeClientRequest(page, nil)
+		res, err := scrapeClientRequestG(page, nil)
 		if err != nil {
 			fmt.Println(err)
 		}
