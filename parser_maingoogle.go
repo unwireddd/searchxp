@@ -331,6 +331,8 @@ func scrapeClientRequestG(searchURL string, proxyString interface{}) (*http.Resp
 
 	res, err := baseClient.Do(req)
 	if res.StatusCode != 200 {
+		fmt.Println(res.StatusCode)
+
 		err := fmt.Errorf("scraper received a non-200 status code suggesting a ban")
 		return nil, err
 	}

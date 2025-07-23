@@ -9,6 +9,8 @@ import (
 	"os"
 	"os/exec"
 	"time"
+
+	googlesearch "github.com/rocketlaunchr/google-search"
 )
 
 // reminder that if I want to use the same variable in different files I need to declare it before using it in any fundtion so Its global
@@ -45,7 +47,8 @@ func index(w http.ResponseWriter, r *http.Request) {
 func output(w http.ResponseWriter, r *http.Request) {
 	for {
 		//main_google()
-		fmt.Println(GoogleScrape("metro", "com", "en", nil, 1, 30, 10))
+		//fmt.Println(GoogleScrape("metro", "com", "en", nil, 1, 30, 10))
+		fmt.Println(googlesearch.Search(nil, "metro warszawskie"))
 		fmt.Println("point")
 	}
 	// okay so it turns out that the whole thing only works if the output file is here from the beginning
