@@ -9,8 +9,6 @@ import (
 	"os"
 	"os/exec"
 	"time"
-
-	googlesearch "github.com/rocketlaunchr/google-search"
 )
 
 // reminder that if I want to use the same variable in different files I need to declare it before using it in any fundtion so Its global
@@ -45,19 +43,12 @@ func index(w http.ResponseWriter, r *http.Request) {
 
 // This one should handle the html form
 func output(w http.ResponseWriter, r *http.Request) {
-	for {
-		//main_google()
-		//fmt.Println(GoogleScrape("metro", "com", "en", nil, 1, 30, 10))
-		fmt.Println(googlesearch.Search(nil, "metro warszawskie"))
-		fmt.Println("point")
-	}
+
 	// okay so it turns out that the whole thing only works if the output file is here from the beginning
 	// making the script remove all of Its contents and replacing them with the results for a new search term wont really work at all since the function
 	// reads the file from Its beginning state anyways
 	fname = r.FormValue("phrase")
 	fmt.Println(fname)
-	mainParser(fname)
-	procGen()
 	// Saving the variable contents into my text file
 
 	file, err := os.Create("output.txt")
@@ -72,6 +63,40 @@ func output(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		fmt.Println("Error writing to file:", err)
 	}
+
+	// executing the python startpage scraper script
+	scriptPathSpage := "/home/metro/searchxp/helium/startpage.py"
+
+	// Create a new command to run the Python script
+	cmdS := exec.Command("python3", scriptPathSpage)
+
+	errSpage := cmdS.Run()
+	if errSpage != nil {
+		fmt.Println(errSpage)
+		return
+	}
+
+	scriptPathYandex := "/home/metro/searchxp/helium/yandex.py"
+	cmdY := exec.Command("python3", scriptPathYandex)
+	errYandex := cmdY.Run()
+	if errYandex != nil {
+		fmt.Println(errYandex)
+		return
+	}
+
+	// AAA
+
+	// Capture the output of the script
+	//var out bytes.Buffer
+	//cmd.Stdout = &out
+
+	// Run the command and wait for it to finish
+
+	// end
+
+	mainParser(fname)
+	procGen()
+
 	// EXECUTING THE IMAGE BULK-DOWNLOAD SCRIPT START
 	pythonCmd := "python3"
 	scriptPath := "/home/metro/searchxp/scripts/imgscrape_test.py"
@@ -137,9 +162,9 @@ func output(w http.ResponseWriter, r *http.Request) {
 
 	// end test
 
-	temp = template.Must(template.ParseGlob("res/*.html"))
+	temp = template.Must(template.ParseGlob("helium/*.html"))
 
-	temp.ExecuteTemplate(w, "output.html", nil)
+	temp.ExecuteTemplate(w, "res_spage.html", nil)
 
 }
 

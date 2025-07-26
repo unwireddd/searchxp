@@ -1,7 +1,5 @@
-what can I try doing is to move the html file to the dataset folder and execute it from there or something
+TODO for now:
 
-ok so theoretically if that html file was located in the dataset folder instead it would start working
-
-I may want to fix the multiword search issue in the bing parser and add the country detection before I proceed to writing another scrapper
-
-okay so it seems that parsing google is dead and it doesnt matter which parser I use
+-add a search bar in the results page
+-add the images page
+-add 2-3 more parsers
