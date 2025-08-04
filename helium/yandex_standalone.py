@@ -2,21 +2,29 @@ from helium import *
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 import time
-from selenium.webdriver.chrome.options import Options
-
 
 
 def parse_yandex():
     def write_arrays_to_file(array1, array2, array3, filename):
         iter = 1
-        with open(filename, 'a') as file:
+        with open(filename, 'w') as file:
+            file.write(f'<h1>Search results for {sPhrase}</h1>')
+            file.write(f'<form action="/output" method="post"><input type="text" name="phrase" id="fer">')
+            file.write(f'<input type="radio" id="html" name="Engine" value="Startpage">')
+            file.write(f'<label for="html">Startpage</label><br>')
+            file.write(f'<input type="radio" id="css" name="Engine" value="Yandex">')
+            file.write(f'<label for="css">Yandex</label><br>')
+            file.write(f'<input type="radio" id="javascript" name="Engine" value="Metasearch">')
+            file.write(f'<label for="javascript">Metasearch</label>')
+            file.write(f'</form>')
+            #file.write(f'<form action="/displayImages" method="post"><input type="text" name="phrase" id="fer"></form>')
+            file.write(f'<form action="/displayImages" method="post"><button>Display images</button></form>')
+            #file.write(f'<a href="https://localhost:6060/displayImages">[Images]</a>')
             for i in range(len(array1)):
                 file.write(f'<a href="{array1[i]}">{array2[i]}</a>\n')
                 if iter <= len(array3):
                     file.write(f'<p>{array3[i]}</p>\n')
                 iter += 1
-            file.write(f'<form action="/spageNext" method="post"><button>Next page</button></form>')
-            
 
 
     searchPhrase = open("/home/metro/searchxp/output.txt", "r")
@@ -27,22 +35,9 @@ def parse_yandex():
     links_str = []
     titles_str = []
     descs_str = []
-    # REMOTE WD START
-    options = Options()
-    options.add_argument("--headless=new")
-    #options.add_argument("--headless")
-    driver = webdriver.Remote(
-    command_executor='http://localhost:9515',
-    options=options
-    #options.add_argument("headless=True")
-    )
-    set_driver(driver) 
-    go_to('https://yandex.com/')
 
-    # REMOTE WD STOP
-
-    #helium.get_driver()
-    #driver = start_firefox('https://yandex.com/', headless=True)
+    helium.get_driver()
+    driver = start_firefox('https://yandex.com/', headless=True)
     #start_firefox("google.com", headless=True)
     write(str(sPhrase), into="Search with Yandex AI")
     press(ENTER)

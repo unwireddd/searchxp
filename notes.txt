@@ -3,3 +3,6 @@ TODO for now:
 -add a search bar in the results page
 -add the images page
 -add 2-3 more parsers
+
+The main problem for now is that my parser is too slow, first I need to remove the time sleeps and separate the image search function somehow
+next thing is that for now it has to run 2 separate pyton scripts which I believe slows down the entire process, I can try to connect them somehow

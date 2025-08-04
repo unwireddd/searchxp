@@ -6,7 +6,7 @@ from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.chrome.options import Options
 
 #I think it would be the best if I just extracted the href attrib from those links instead
-def parse_startpage():
+def next_startpage():
     def write_arrays_to_file(array1, array2, array3, filename):
         with open(filename, 'w') as file:
             file.write(f'<h1>Search results for {sPhrase}</h1>')
@@ -24,7 +24,6 @@ def parse_startpage():
             for i in range(len(array1)):
                 file.write(f'<a href="{array1[i]}">{array2[i]}</a>\n')
                 file.write(f'<p>{array3[i]}</p>\n')
-            file.write(f'<form action="/spageNext" method="post"><button>Next page</button></form>')
 
 
     searchPhrase = open("/home/metro/searchxp/output.txt", "r")
@@ -55,7 +54,7 @@ def parse_startpage():
     go_to('https://www.startpage.com/sp/search')
 
     # REMOTE WD STOP
-
+    
     #helium.get_driver()
     #driver.get('https://www.startpage.com/sp/search')
     #driver = start_firefox('https://www.startpage.com/sp/search')
@@ -65,6 +64,7 @@ def parse_startpage():
     #ok so the timesleep is actually needed for it to work properly
     time.sleep(1)
     #res1 = find_all(S("wgl-title"))
+    click(Button("2"))
     links = driver.find_elements(By.CLASS_NAME, 'result-link')
     #titles = driver.find_elements
     print(links)
@@ -92,7 +92,4 @@ def parse_startpage():
     print(descs_str)
 
     write_arrays_to_file(links_str, titles_str, descs_str, '/home/metro/searchxp/helium/res_spage.html')
-parse_startpage()
-
-
-
+next_startpage()
