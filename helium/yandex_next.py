@@ -2,17 +2,15 @@ from helium import *
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 import time
-from selenium.webdriver.firefox.options import Options
-from selenium.webdriver.chrome.options import Options
 
-#I think it would be the best if I just extracted the href attrib from those links instead
-def next_startpage():
+
+def parse_yandex():
     pageNum = open("/home/metro/searchxp/whichPage.txt", "r")
     num = pageNum.readlines()
     num = num[0]
     numb = str(num)
-
     def write_arrays_to_file(array1, array2, array3, filename):
+        iter = 1
         with open(filename, 'w') as file:
             file.write(f'<h1>Search results for {sPhrase}</h1>')
             file.write(f'<form action="/output" method="post"><input type="text" name="phrase" id="fer">')
@@ -28,63 +26,42 @@ def next_startpage():
             #file.write(f'<a href="https://localhost:6060/displayImages">[Images]</a>')
             for i in range(len(array1)):
                 file.write(f'<a href="{array1[i]}">{array2[i]}</a>\n')
-                file.write(f'<p>{array3[i]}</p>\n')
-            file.write(f'<form action="/spageNext" method="post"><button>Next page</button></form>')
+                if iter <= len(array3):
+                    file.write(f'<p>{array3[i]}</p>\n')
+                iter += 1
+            file.write(f'<form action="/yandexNext" method="post"><button>Next page</button></form>')
 
+
+
+    # I just have to compare both of those scripts tomorrow to see what happens
 
     searchPhrase = open("/home/metro/searchxp/output.txt", "r")
     searchPhrase = searchPhrase.readlines()
     sPhrase = " ".join(searchPhrase)
     print(sPhrase)
 
-    #with open("/home/metro/searchxp/helium/res_spage.html", "w") as file:
-    #    file.write(f'<h1>Search results for {sPhrase}')
-
     links_str = []
     titles_str = []
     descs_str = []
 
-    # REMOTE WD START
-    options = Options()
-    options.add_argument("--headless=new")
-    #options.add_argument("--headless")
-    driver = webdriver.Remote(
-    command_executor='http://localhost:9515',
-    options=options
-    #options.add_argument("headless=True")
-    )
-
-    
-    set_driver(driver)
-    
-    go_to('https://www.startpage.com/sp/search')
-
-    # REMOTE WD STOP
-    
-    #helium.get_driver()
-    #driver.get('https://www.startpage.com/sp/search')
-    #driver = start_firefox('https://www.startpage.com/sp/search')
+    helium.get_driver()
+    driver = start_firefox('https://yandex.com/', headless=True)
     #start_firefox("google.com", headless=True)
-    write(str(sPhrase), into="Search privately")
+    write(str(sPhrase), into="Search with Yandex AI")
     press(ENTER)
-    #ok so the timesleep is actually needed for it to work properly
     time.sleep(1)
-    #res1 = find_all(S("wgl-title"))
     click(Button(numb))
-    links = driver.find_elements(By.CLASS_NAME, 'result-link')
-    #titles = driver.find_elements
-    print(links)
-    for link in links:
-        print(link.text)
-    #wgl-title
-    titles = driver.find_elements(By.CLASS_NAME, 'wgl-title')
-    for title in titles:
-        print(title.text)
 
-    descs = driver.find_elements(By.CLASS_NAME, 'description')
-    for desc in descs:
-        print(desc.text)
-    print("a")
+    #res1 = find_all(S("wgl-title"))
+    titles = driver.find_elements(By.CLASS_NAME, 'OrganicTitleContentSpan')
+
+    #ok so the class link is what I was looking for but I need to extract the href attribute from it
+    links = driver.find_elements(By.CLASS_NAME, 'OrganicTitle-Link')
+
+    descs = driver.find_elements(By.CLASS_NAME, 'OrganicTextContentSpan')
+
+    #for x in links:
+    #    print(x.get_attribute("href"))
 
     for x in links:
         links_str.append(x.get_attribute("href"))
@@ -98,4 +75,4 @@ def next_startpage():
     print(descs_str)
 
     write_arrays_to_file(links_str, titles_str, descs_str, '/home/metro/searchxp/helium/res_spage.html')
-next_startpage()
+parse_yandex()

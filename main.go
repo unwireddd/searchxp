@@ -37,6 +37,8 @@ func main() {
 	http.HandleFunc("/displayImages", displayImages)
 	http.HandleFunc("/goback", goback)
 	http.HandleFunc("/spageNext", spageNext)
+	http.HandleFunc("/yandexNext", spageNext)
+	http.HandleFunc("/metaNext", spageNext)
 	http.ListenAndServe(":6060", nil)
 }
 
@@ -52,6 +54,7 @@ func output(w http.ResponseWriter, r *http.Request) {
 	// okay so it turns out that the whole thing only works if the output file is here from the beginning
 	// making the script remove all of Its contents and replacing them with the results for a new search term wont really work at all since the function
 	// reads the file from Its beginning state anyways
+	whichPage = 1
 	fname = r.FormValue("phrase")
 	fmt.Println(fname)
 	whichEngine := r.FormValue("Engine")
@@ -302,9 +305,115 @@ func displayImages(w http.ResponseWriter, r *http.Request) {
 
 func spageNext(w http.ResponseWriter, r *http.Request) {
 	whichPage += 1
+	// WRITING THE PAGE VAR TO FILE
+
+	// Convert int to string
+	myIntStr := fmt.Sprintf("%d", whichPage)
+
+	// Specify the filename
+	filename := "whichPage.txt"
+
+	// Open the file for writing
+	file, err := os.Create(filename)
+	if err != nil {
+		fmt.Printf("Failed to create file: %v\n", err)
+		return
+	}
+	defer file.Close()
+
+	// Write the string to the file
+	_, err = file.WriteString(myIntStr) // Added newline for clarity
+	if err != nil {
+		fmt.Printf("Failed to write to file: %v\n", err)
+		return
+	}
+
+	// END
 
 	// for how the problem is that this function doesnt even execute on button
 	scriptPathInit := "/home/metro/searchxp/helium/startpage_next.py"
+	cmdInit := exec.Command("python3", scriptPathInit)
+	fmt.Println("AA")
+
+	errSpage := cmdInit.Run()
+	if errSpage != nil {
+		fmt.Println(errSpage)
+		return
+	}
+	temp = template.Must(template.ParseGlob("helium/*.html"))
+	temp.ExecuteTemplate(w, "res_spage.html", nil)
+}
+
+func yandexNext(w http.ResponseWriter, r *http.Request) {
+	whichPage += 1
+	// WRITING THE PAGE VAR TO FILE
+
+	// Convert int to string
+	myIntStr := fmt.Sprintf("%d", whichPage)
+
+	// Specify the filename
+	filename := "whichPage.txt"
+
+	// Open the file for writing
+	file, err := os.Create(filename)
+	if err != nil {
+		fmt.Printf("Failed to create file: %v\n", err)
+		return
+	}
+	defer file.Close()
+
+	// Write the string to the file
+	_, err = file.WriteString(myIntStr) // Added newline for clarity
+	if err != nil {
+		fmt.Printf("Failed to write to file: %v\n", err)
+		return
+	}
+
+	// END
+
+	// for how the problem is that this function doesnt even execute on button
+	scriptPathInit := "/home/metro/searchxp/helium/yandex_next.py"
+	cmdInit := exec.Command("python3", scriptPathInit)
+	fmt.Println("AA")
+
+	errSpage := cmdInit.Run()
+	if errSpage != nil {
+		fmt.Println(errSpage)
+		return
+	}
+	temp = template.Must(template.ParseGlob("helium/*.html"))
+	temp.ExecuteTemplate(w, "res_spage.html", nil)
+}
+
+func metaNext(w http.ResponseWriter, r *http.Request) {
+	whichPage += 1
+	// WRITING THE PAGE VAR TO FILE
+
+	// Convert int to string
+	myIntStr := fmt.Sprintf("%d", whichPage)
+
+	// Specify the filename
+	filename := "whichPage.txt"
+
+	// Open the file for writing
+	file, err := os.Create(filename)
+	if err != nil {
+		fmt.Printf("Failed to create file: %v\n", err)
+		return
+	}
+	defer file.Close()
+
+	// Write the string to the file
+	_, err = file.WriteString(myIntStr) // Added newline for clarity
+	if err != nil {
+		fmt.Printf("Failed to write to file: %v\n", err)
+		return
+	}
+
+	// END
+
+	// for how the problem is that this function doesnt even execute on button
+	scriptPathInit := "/home/metro/searchxp/helium/parsers_init_next.py"
 	cmdInit := exec.Command("python3", scriptPathInit)
 	fmt.Println("AA")
 
