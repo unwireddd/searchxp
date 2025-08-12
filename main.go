@@ -38,7 +38,7 @@ func main() {
 	http.HandleFunc("/goback", goback)
 	http.HandleFunc("/spageNext", spageNext)
 	http.HandleFunc("/yandexNext", spageNext)
-	http.HandleFunc("/metaNext", spageNext)
+	http.HandleFunc("/metaNext", metaNext)
 	http.ListenAndServe(":6060", nil)
 }
 

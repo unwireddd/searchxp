@@ -3,6 +3,7 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 import time
 from selenium.webdriver.chrome.options import Options
+import ua_generator
 
 
 
@@ -15,7 +16,7 @@ def parse_yandex():
                 if iter <= len(array3):
                     file.write(f'<p>{array3[i]}</p>\n')
                 iter += 1
-            file.write(f'<form action="/spageNext" method="post"><button>Next page</button></form>')
+            file.write(f'<form action="/metaNext" method="post"><button>Next page</button></form>')
             
 
 
@@ -28,7 +29,9 @@ def parse_yandex():
     titles_str = []
     descs_str = []
     # REMOTE WD START
+    ua = ua_generator.generate()
     options = Options()
+    options.add_argument(f'user-agent={ua}')
     options.add_argument("--headless=new")
     #options.add_argument("--headless")
     driver = webdriver.Remote(
@@ -44,7 +47,8 @@ def parse_yandex():
     #helium.get_driver()
     #driver = start_firefox('https://yandex.com/', headless=True)
     #start_firefox("google.com", headless=True)
-    write(str(sPhrase), into="Search with Yandex AI")
+    searchBox = driver.find_element(By.CLASS_NAME, "search3__label")
+    searchBox.send_keys(str(sPhrase))
     press(ENTER)
     time.sleep(1)
     #res1 = find_all(S("wgl-title"))

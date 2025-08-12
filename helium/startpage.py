@@ -4,6 +4,7 @@ from selenium.webdriver.common.by import By
 import time
 from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.chrome.options import Options
+import ua_generator
 
 #I think it would be the best if I just extracted the href attrib from those links instead
 def parse_startpage():

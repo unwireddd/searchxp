@@ -2,6 +2,7 @@ from helium import *
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 import time
+import ua_generator
 
 
 def parse_yandex():
@@ -32,13 +33,27 @@ def parse_yandex():
     descs_str = []
 
     #btw I have to implement the remote webdriver thing here too
-    helium.get_driver()
-    driver = start_firefox('https://yandex.com/')
+    ua = ua_generator.generate()
+    options = Options()
+    options.add_argument(f'user-agent={ua}')
+    options.add_argument("--headless=new")
+    #options.add_argument("--headless")
+    driver = webdriver.Remote(
+    command_executor='http://localhost:9515',
+    options=options
+    #options.add_argument("headless=True")
+    )
+    set_driver(driver) 
+    go_to('https://yandex.com/')
+    #helium.get_driver()
+    #driver = start_firefox('https://yandex.com/')
     #start_firefox("google.com", headless=True)
-    write(str(sPhrase), into="Search with Yandex AI")
+    searchBox = driver.find_element(By.CLASS_NAME, "search3__label")
+    searchBox.send_keys(str(sPhrase))
     press(ENTER)
     time.sleep(1)
-    click(Button(numb))
+    pgClick = driver.find_element(By.LINK_TEXT, numb)
+    pgClick.click()
 
     #res1 = find_all(S("wgl-title"))
     titles = driver.find_elements(By.CLASS_NAME, 'OrganicTitleContentSpan')

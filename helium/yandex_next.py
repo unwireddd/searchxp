@@ -2,7 +2,8 @@ from helium import *
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 import time
-
+import ua_generator
+from selenium.webdriver.chrome.options import Options
 
 def parse_yandex():
     pageNum = open("/home/metro/searchxp/whichPage.txt", "r")
@@ -44,13 +45,36 @@ def parse_yandex():
     titles_str = []
     descs_str = []
 
-    helium.get_driver()
-    driver = start_firefox('https://yandex.com/', headless=True)
+    #helium.get_driver()
+    #driver = start_firefox('https://yandex.com/')
+    ua = ua_generator.generate()
+    options = Options()
+    options.add_argument(f'user-agent={ua}')
+    #options.add_argument("--headless=new")
+    #options.add_argument("--headless")
+    driver = webdriver.Remote(
+    command_executor='http://localhost:9515',
+    options=options
+    #options.add_argument("headless=True")
+    )
+    set_driver(driver) 
+    go_to('https://yandex.com/')
+    #, headless=True
     #start_firefox("google.com", headless=True)
-    write(str(sPhrase), into="Search with Yandex AI")
+
+    #this thing may not work because of that yandex goofy animation, I just have to change the phrase parameter to a textbox one
+
+    searchBox = driver.find_element(By.CLASS_NAME, "search3__label")
+    searchBox.send_keys(str(sPhrase))
+    #write(str(sPhrase), into="Search with Yandex AI")
     press(ENTER)
     time.sleep(1)
-    click(Button(numb))
+    #click(Button(numb))
+    #pgToClick = find_all("a", text=numb)
+    pgClick = driver.find_element(By.LINK_TEXT, numb)
+    #nPage = driver.find_element(By.)
+    #click(Link("2"))
+    pgClick.click()
 
     #res1 = find_all(S("wgl-title"))
     titles = driver.find_elements(By.CLASS_NAME, 'OrganicTitleContentSpan')
