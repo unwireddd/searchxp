@@ -25,7 +25,7 @@ def parse_startpage():
             for i in range(len(array1)):
                 file.write(f'<a href="{array1[i]}">{array2[i]}</a>\n')
                 file.write(f'<p>{array3[i]}</p>\n')
-            file.write(f'<form action="/metaNext" method="post"><button>Next page</button></form>')
+            file.write(f'<form action="/spageNext" method="post"><button>Next page</button></form>')
 
 
     searchPhrase = open("/home/metro/searchxp/output.txt", "r")

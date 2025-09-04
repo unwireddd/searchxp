@@ -50,13 +50,22 @@ def parse_yandex():
     command_executor='http://localhost:9515',
     options=options
     #options.add_argument("headless=True")
+
+    # from what I see automated yandex is pretty unstable in terms of which element should I put my search phrase to
+    # it might be better if I just go_to to a link with the search phrase since yandex is link based anyways
     )
+
+    # https://yandex.com/search/?text=dzierzoniow+dolnoslaskie&lr=21392
+    newsPhrase = sPhrase.replace(" ", "+")
+    newLink = "https://yandex.com/search/?text=" + newsPhrase
     set_driver(driver) 
-    go_to('https://yandex.com/')
+    #go_to('https://yandex.com/')
+    
     #start_firefox("google.com", headless=True)
-    searchBox = driver.find_element(By.CLASS_NAME, "search3__label")
-    searchBox.send_keys(str(sPhrase))
-    press(ENTER)
+    #searchBox = driver.find_element(By.CLASS_NAME, "search3__label")
+    #searchBox.send_keys(str(sPhrase))
+    #press(ENTER)
+    go_to(newLink)
     time.sleep(1)
     #res1 = find_all(S("wgl-title"))
     titles = driver.find_elements(By.CLASS_NAME, 'OrganicTitleContentSpan')
