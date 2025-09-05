@@ -6,7 +6,7 @@ from selenium.webdriver.chrome.options import Options
 import ua_generator
 
 
-def parse_yandex():
+def parse_ddg():
     def write_arrays_to_file(array1, array2, array3, filename):
         iter = 1
         with open(filename, 'w') as file:
@@ -59,35 +59,21 @@ def parse_yandex():
     #newsPhrase = sPhrase.replace(" ", "+")
     #newLink = "https://yandex.com/search/?text=" + newsPhrase
     set_driver(driver) 
-    go_to('https://yandex.com/')
+    go_to('https://duckduckgo.com/')
     
     #start_firefox("google.com", headless=True)
-    searchBox = driver.find_element(By.CLASS_NAME, "search3__input")
-    searchBox.send_keys(str(sPhrase))
+    #searchBox = driver.find_element(By.CLASS_NAME, "search3__input")
+    #searchBox.send_keys(str(sPhrase))
+    discard = driver.find_element(By.CLASS_NAME, 'mobile-atb-banner_dismiss__qtWyH')
+    click(discard)
+    write(str(sPhrase), into="Search without being tracked")
     press(ENTER)
     #go_to(newLink)
     time.sleep(1)
-    #res1 = find_all(S("wgl-title"))
-    titles = driver.find_elements(By.CLASS_NAME, 'OrganicTitleContentSpan')
 
-    #ok so the class link is what I was looking for but I need to extract the href attribute from it
-    links = driver.find_elements(By.CLASS_NAME, 'OrganicTitle-Link')
-
-    descs = driver.find_elements(By.CLASS_NAME, 'OrganicTextContentSpan')
-
-    #for x in links:
-    #    print(x.get_attribute("href"))
-
-    for x in links:
-        links_str.append(x.get_attribute("href"))
-    for x in titles:
-        titles_str.append(x.text)
-    for x in descs:
-        descs_str.append(x.text)
-
-    print(links_str)
-    print(titles_str)
-    print(descs_str)
-
-    write_arrays_to_file(links_str, titles_str, descs_str, '/home/metro/searchxp/helium/res_spage.html')
-parse_yandex()
+    links = driver.find_elements(By.CLASS_NAME, 'eVNpHGjtxRBq_gLOfGDr')
+    #titles = driver.find_elements
+    print(links)
+    for link in links:
+        print(link.text)
+parse_ddg()
